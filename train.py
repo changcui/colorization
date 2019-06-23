@@ -25,7 +25,7 @@ def train():
     model.train()
     print("Train: Begin!")    
     for epoch in range(cfg.epochs):
-        for batch_idx, (data, label) in tqdm(enumerate(train_loader)):
+        for batch_idx, (data, label) in enumerate(tqdm((train_loader))):
             l, ab = data.to(device), label.to(device)
             output = model(l)
             loss = torch.pow(output - ab, 2).sum() / output.numel()
