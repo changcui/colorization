@@ -1,9 +1,11 @@
 import os
+import torch
 import torch.optim as optim
 import torch.nn.functional as F
 from model import ColorNet
 from dataset import ColorDataset 
 from common import Config
+from tqdm import tqdm
 
 cfg = Config()
 train_set = ColorDataset('train')
@@ -21,9 +23,9 @@ optimizer = optim.Adadelta(model.parameters())
 
 def train():
     model.train()
-    
+    print("Train: Begin!")    
     for epoch in range(cfg.epochs):
-        for batch_idx, (data, label) in enumerate(train_loader):
+        for batch_idx, (data, label) in tqdm(enumerate(train_loader)):
             l, ab = data.to(device), label.to(device)
             output = model(l)
             loss = torch.pow(output - ab, 2).sum() / output.numel()
@@ -35,7 +37,9 @@ def train():
                     epoch, batch_idx * data.size(0), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item()))
                 torch.save(model.state_dict(), 'Weights/weights.pkl')
+    print("Saving the model!")
     torch.save(model.state_dict(), 'Weights/weights.pkl')
+    print("Done")
 
 if __name__ == '__main__':
     train()
