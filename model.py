@@ -37,15 +37,9 @@ class MidLevelFeatNet(nn.Module):
         super(MidLevelFeatNet, self).__init__()
         self.conv1 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
         self.bn1 = nn.BatchNorm2d(512)
-        self.conv2 = nn.Conv2d(512, 1024, kernel_size=3, stride=1, padding=1)
-        self.bn2 = nn.BatchNorm2d(1024)
-        self.conv3 = nn.Conv2d(1024, 512, kernel_size=3, stride=1, padding=1)
-        self.bn3 = nn.BatchNorm2d(512)
 
     def forward(self, x):
         x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
         return x
 
 
