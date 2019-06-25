@@ -55,6 +55,7 @@ class ColorizationNet(nn.Module):
         self.conv4 = nn.Conv2d(64, 32, kernel_size=3, stride=1, padding=1)
         self.bn5 = nn.BatchNorm2d(32)
         self.conv5 = nn.Conv2d(32, 2, kernel_size=3, stride=1, padding=1)
+        self.bn6 = nn.BatchNorm2d(2)
         self.upsample = nn.UpsamplingNearest2d(scale_factor=2)
 
     def forward(self, x):
@@ -63,8 +64,8 @@ class ColorizationNet(nn.Module):
         x = F.relu(self.bn3(self.conv2(x)))
         x = F.relu(self.bn4(self.conv3(x)))
         x = self.upsample(x)
-        x = torch.sigmoid(self.bn5(self.conv4(x)))
-        x = self.upsample(self.conv5(x))
+        x = F.relu(self.bn5(self.conv4(x)))
+        x = self.upsample(torch.sigmoid(self.bn6(self.conv5(x))))
         return x
 
 

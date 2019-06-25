@@ -9,6 +9,7 @@ __pycache__/
 # Dataset
 Dataset/
 Weights/
+Output/
 
 # Distribution / packaging
 .Python
