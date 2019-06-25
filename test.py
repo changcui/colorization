@@ -1,7 +1,9 @@
 import torch
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.color import lab2rgb
 from model import ColorNet
 from dataset import ColorDataset
-from common import Config
 
 
 test_set = ColorDataset('test')
@@ -15,4 +17,36 @@ model.to(device)
 
 
 def test():
-    
+    model.eval()
+    print("Test: Begin!")
+    for idx, (data, label) in enumerate(test_loader):
+        l, ab = data.to(device), label.to(device)
+        for img in l:
+            gray_img = img.cpu().squeeze().numpy()*255
+            gray_img = gray_img.astype(np.float64)
+            plt.imsave('./Output' + str(idx) + '_gray.jpg', gray_img)
+            
+        output = model(l)
+        color_img = torch.cat((l, output), 1)
+        gt_img = torch.cat((l, ab), 1)
+        color_img = color_img.data.cpu().numpy().transpose((0, 2, 3, 1))
+        gt_img = gt_img.data.cpu().numpy().transpose((0, 2, 3, 1))
+        for img in color_img:
+            img[:, :, 0:1] = img[:, :, 0:1] * 100
+            img[:, :, 1:3] = img[:, :, 1:3] * 255 - 128
+            img = img.astype(np.float64)
+            img = lab2rgb(img)
+            plt.imsave('./output/' + str(idx) + '_color.jpg', img)
+        for img in gt_img:
+            img[:, :, 0:1] = img[:, :, 0:1] * 100
+            img[:, :, 1:3] = img[:, :, 1:3] * 255 - 128
+            img = img.astype(np.float64)
+            img = lab2rgb(img)
+            plt.imsave('./output/' + str(idx) + '_gt.jpg', img)
+        if idx == 20:
+            break
+
+
+if __name__ == "__main__":
+    test()
+
