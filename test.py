@@ -7,7 +7,7 @@ from model import ColorNet
 
 
 test_set = ColorDataset('test')
-test_loader = torch.utils.data.DataLoader(test_set, batch_size=1, shuffle=False,
+test_loader = torch.utils.data.DataLoader(test_set, batch_size=1, shuffle=True,
                                 num_workers=4)
 model = ColorNet()
 model.load_state_dict(torch.load('Weights/weights.pkl'))
@@ -39,6 +39,8 @@ def test():
             img = img.astype(np.float64)
             img = lab2rgb(img)
             plt.imsave('./Output/' + str(idx) + '_color.jpg', img)
+            mse = torch.pow(ab - output, 2).sum()
+            print("The MSE of the {:d} image is {:f}".format(idx, mse.item()))
             
         for img in gt_img:
             img[:, :, 0:1] = img[:, :, 0:1] * 100
