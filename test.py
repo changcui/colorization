@@ -1,24 +1,24 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+from torchvision import transforms
 from skimage.color import lab2rgb
-from dataset import ColorDataset
+from dataset import GrayscaleImageFolder
 from model import ColorNet
 
+val_transforms = transforms.Compose([transforms.Resize(256), transforms.CenterCrop(224)])
+val_imagefolder = GrayscaleImageFolder('images/val' , val_transforms)
+val_loader = torch.utils.data.DataLoader(val_imagefolder, batch_size=1, shuffle=False)
 
-test_set = ColorDataset('test')
-test_loader = torch.utils.data.DataLoader(test_set, batch_size=1, shuffle=True,
-                                num_workers=4)
 model = ColorNet()
 model.load_state_dict(torch.load('Weights/weights.pkl'))
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
-
 def test():
     model.eval()
     print("Test: Begin!")
-    for idx, (data, label) in enumerate(test_loader):
+    for idx, (data, label) in enumerate(val_loader):
         l, ab = data.to(device), label.to(device)
         for img in l:
             gray_img = np.zeros((224, 224, 3))

@@ -2,15 +2,19 @@ import os
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
+import torchvision.transforms as transforms
 from model import ColorNet
-from dataset import ColorDataset 
+from dataset import ColorDataset, GrayscaleImageFolder
 from common import Config, AverageMeter
 from tqdm import tqdm
 
 cfg = Config()
-train_set = ColorDataset('train')
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=cfg.batch_size, 
-                shuffle=True, num_workers=4)
+
+train_transforms = transforms.Compose([transforms.RandomResizedCrop(224),
+                    transforms.RandomHorizontalFlip()])
+train_imagefolder = GrayscaleImageFolder('images/train', train_transforms)
+train_loader = torch.utils.data.DataLoader(train_imagefolder, 
+                batch_size=cfg.batch_size, shuffle=True, num_workers=4)
 
 model = ColorNet()
 if os.path.exists('Weights/weights.pkl'):

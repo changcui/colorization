@@ -1,7 +1,7 @@
 class Config(object):
     def __init__(self):
-        self.epochs = 20
-        self.batch_size = 16
+        self.epochs = 30
+        self.batch_size = 128
         self.save_period = 100
 
 
