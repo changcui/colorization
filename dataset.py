@@ -39,7 +39,6 @@ class GrayscaleImageFolder(datasets.ImageFolder):
       target = self.target_transform(target)
     return img_original, img_ab
 
-
 if __name__ == '__main__':
     train_set = ColorDataset('train')
     test_set = ColorDataset('test')

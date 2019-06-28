@@ -23,8 +23,13 @@ if os.path.exists('Weights/weights.pkl'):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
-criterion = torch.nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=1e-1, weight_decay=0.0)
+if cfg.is_classification:
+    criterion = torch.nn.CrossEntropyLoss()
+else:
+    criterion = torch.nn.MSELoss()
+
+optimizer = optim.Adam(model.parameters(), lr=1e-2, weight_decay=0.0)
+# optimizer = optim.Adadelta() 
 
 def train():
     model.train()
@@ -34,7 +39,13 @@ def train():
         for batch_idx, (data, label) in enumerate(tqdm((train_loader))):
             l, ab = data.to(device), label.to(device)
             output = model(l)
-            loss = criterion(output, ab)
+            if cfg.is_classification:
+                a = (ab[:, 0, :, :] / (1. / cfg.bins)).floor().long()
+                b = (ab[:, 1, :, :] / (1. / cfg.bins)).floor().long()
+                loss = 0.5 * criterion(output[0], a) + \
+                        0.5 * criterion(output[1], b)
+            else:
+                loss = criterion(output, ab)
             losses.update(loss.item(), l.size(0))
             optimizer.zero_grad()
             loss.backward()
