@@ -7,9 +7,13 @@ import numpy as np
 class Backbone(nn.Module):
     def __init__(self):
         super(Backbone, self).__init__()
-        resnet = models.resnet18(num_classes=10) 
+        resnet = models.resnet18(num_classes=365) 
         resnet.conv1.weight = nn.Parameter(resnet.conv1.weight.
-                                sum(dim=1).unsqueeze(1)) 
+                                sum(dim=1).unsqueeze(1).data) 
+        if torch.cuda.is_available(): # and only if gpu is available
+            resnet_gray_weights = torch.load('Pretrained/resnet_gray_weights.pth.tar')
+            resnet.load_state_dict(resnet_gray_weights)
+            print('Pretrained ResNet-gray weights loaded')
         self.midlevel_resnet = nn.Sequential(*list(resnet.children())[0:6])
 
     def forward(self, x):

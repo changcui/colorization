@@ -24,7 +24,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
 criterion = torch.nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=1e-2, weight_decay=0.0)
+optimizer = optim.Adam(model.parameters(), lr=1e-1, weight_decay=0.0)
 
 def train():
     model.train()

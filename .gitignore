@@ -11,6 +11,7 @@ Dataset/
 Weights/
 Output/
 images/
+Pretrained/
 
 # Distribution / packaging
 .Python

@@ -19,6 +19,8 @@ def test():
     model.eval()
     print("Test: Begin!")
     for idx, (data, label) in enumerate(val_loader):
+        if idx % 20:
+            continue
         l, ab = data.to(device), label.to(device)
         for img in l:
             gray_img = np.zeros((224, 224, 3))
@@ -48,8 +50,6 @@ def test():
             img = img.astype(np.float64)
             img = lab2rgb(img)
             plt.imsave('./Output/' + str(idx) + '_gt.jpg', img)
-        if idx == 20:
-            break
 
 
 if __name__ == "__main__":
