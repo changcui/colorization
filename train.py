@@ -40,6 +40,8 @@ def train():
             l, ab = data.to(device), label.to(device)
             output = model(l)
             if cfg.is_classification:
+                from IPython import embed
+                embed()
                 a = (ab[:, 0, :, :] / (1. / cfg.bins)).floor().long()
                 b = (ab[:, 1, :, :] / (1. / cfg.bins)).floor().long()
                 loss = 0.5 * criterion(output[0], a) + \
